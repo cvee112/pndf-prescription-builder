@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Philippine National Drug Formulary (PNDF) Prescription Builder & Price Estimator based on DPRI October 2025" />
+    <meta name="theme-color" content="#0038A8" />
+    <title>PNDF Prescription Builder | Philippine Drug Price Estimator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      input:focus, select:focus, button:focus {
+        outline: 2px solid #0038A8;
+        outline-offset: 2px;
+      }
+      input::placeholder {
+        color: #9ca3af;
+      }
+      select option {
+        padding: 8px;
+      }
+      /* Improve mobile experience */
+      @media (max-width: 640px) {
+        input, select, button {
+          font-size: 16px !important; /* Prevents zoom on iOS */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
