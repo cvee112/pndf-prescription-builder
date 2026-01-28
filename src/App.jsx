@@ -14346,18 +14346,6 @@ const getConcentration = (drug) => {
       perUnit: drug.concentration_per_unit || "unit",
     };
   }
-  // Fallback to runtime parsing for edge cases
-  const match = drug.raw_name.match(
-    /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s*\/\s*(\d+(?:\.\d+)?)\s*(mL|L)/i,
-  );
-  if (match) {
-    return {
-      amount: parseFloat(match[1]),
-      unit: match[2].toLowerCase(),
-      per: parseFloat(match[3]),
-      perUnit: match[4].toLowerCase(),
-    };
-  }
   const simple = drug.raw_name.match(
     /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s+(?:Tablet|Capsule|Chewable|Film|Suppository)/i,
   );
