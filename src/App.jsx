@@ -21,6 +21,12 @@ const parseVolume = (drugName) => {
   return match ? parseFloat(match[1]) : null;
 };
 
+const parseDoseCount = (drugName) => {
+  // Match patterns like "200 doses", "120 actuations"
+  const match = drugName.match(/(\d+)\s*(?:doses?|actuations?)/i);
+  return match ? parseInt(match[1]) : null;
+};
+
 const isLiquid = (drugName) => {
   const liquidForms = ['syrup', 'suspension', 'oral drops', 'oral solution', 'elixir', 'drops bottle'];
   return liquidForms.some(f => drugName.toLowerCase().includes(f));
@@ -228,6 +234,14 @@ export default function PrescriptionBuilder() {
         unitCount = mlDose;
         doseDisplay = `${formatNumber(mlDose, 1)} mL`;
         if (conc) doseInMg = (mlDose * conc.amount) / conc.per;
+      } else if (item.fixedDoseUnit === 'puff') {
+        // Inhalers - dose is number of puffs
+        unitCount = parseFloat(item.fixedDose) || 0;
+        doseDisplay = `${formatNumber(unitCount, 0)} puff${unitCount !== 1 ? 's' : ''}`;
+      } else if (item.fixedDoseUnit === 'drop') {
+        // Eye/ear drops - dose is number of drops
+        unitCount = parseFloat(item.fixedDose) || 0;
+        doseDisplay = `${formatNumber(unitCount, 0)} drop${unitCount !== 1 ? 's' : ''}`;
       } else if (liquid && conc && doseInMg > 0) {
         const mlDose = (doseInMg * conc.per) / conc.amount;
         unitCount = mlDose;
@@ -299,7 +313,15 @@ export default function PrescriptionBuilder() {
       if (item.durationUnit === 'months') days *= 30;
       const totalDoses = days * dosesPerDay;
       
-      if (liquid && conc && bottleVolume) {
+      // Check if drug has dose count (inhalers, nasal sprays)
+      const dosesPerContainer = parseDoseCount(item.drug.raw_name);
+      
+      if (dosesPerContainer) {
+        // For inhalers/nasal sprays: calculate based on puffs/actuations per container
+        const puffsPerDose = unitCount || parseFloat(item.fixedDose) || 1;
+        const totalPuffsNeeded = puffsPerDose * totalDoses;
+        quantity = Math.ceil(totalPuffsNeeded / dosesPerContainer);
+      } else if (liquid && conc && bottleVolume) {
         const mlPerDose = item.fixedDoseUnit === 'mL' ? parseFloat(item.fixedDose) || 0 : (doseInMg * conc.per) / conc.amount;
         const totalMl = mlPerDose * totalDoses;
         quantity = Math.ceil(totalMl / bottleVolume);
@@ -312,7 +334,10 @@ export default function PrescriptionBuilder() {
     
     if (quantity && item.drug.highest_price) totalCost = quantity * item.drug.highest_price;
     
-    return { doseInMg, doseDisplay, frequencyDisplay, dosesPerDay, quantity, totalCost, bottleVolume, isLiquid: liquid, isTablet: tablet, concentration: conc, medForm, unitCount };
+    // Get doses per container for display (inhalers)
+    const dosesPerContainer = parseDoseCount(item.drug.raw_name);
+    
+    return { doseInMg, doseDisplay, frequencyDisplay, dosesPerDay, quantity, totalCost, bottleVolume, isLiquid: liquid, isTablet: tablet, concentration: conc, medForm, unitCount, dosesPerContainer };
   }, [patientWeight]);
 
   const generatePrescription = useCallback(() => {
@@ -641,6 +666,12 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
                 <span style={styles.drugInfoValue}>{details.bottleVolume} mL</span>
               </div>
             )}
+            {details.dosesPerContainer && (
+              <div style={styles.drugInfoItem}>
+                <span style={styles.drugInfoLabel}>Doses/Container</span>
+                <span style={styles.drugInfoValue}>{details.dosesPerContainer} doses</span>
+              </div>
+            )}
           </div>
 
           <div style={styles.section}>
@@ -664,6 +695,8 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
                     <option value="mg">mg</option>
                     <option value="mcg">mcg</option>
                     <option value="mL">mL</option>
+                    <option value="puff">puff(s)</option>
+                    <option value="drop">drop(s)</option>
                     <option value="unit">unit(s)</option>
                   </select>
                 </div>
@@ -767,7 +800,7 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
             <div className="computed-grid">
               <div style={styles.computedItem}><span style={styles.computedLabel}>Dose</span><span style={styles.computedValue}>{details.doseDisplay || '—'}</span></div>
               <div style={styles.computedItem}><span style={styles.computedLabel}>Frequency</span><span style={styles.computedValue}>{details.frequencyDisplay || '—'}</span></div>
-              <div style={styles.computedItem}><span style={styles.computedLabel}>Quantity</span><span style={styles.computedValue}>{details.quantity ? `${details.quantity} ${details.isLiquid ? 'bottle(s)' : 'pc(s)'}` : '—'}</span></div>
+              <div style={styles.computedItem}><span style={styles.computedLabel}>Quantity</span><span style={styles.computedValue}>{details.quantity ? `${details.quantity} ${details.isLiquid ? 'bottle(s)' : (details.medForm?.form === 'inhaler' || details.medForm?.form === 'nasal') ? 'inhaler(s)' : 'pc(s)'}` : '—'}</span></div>
               <div style={styles.computedItemHighlight}><span style={styles.computedLabel}>Est. Cost</span><span style={styles.computedValueLg}>{formatCurrency(details.totalCost)}</span></div>
             </div>
           </div>
