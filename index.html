@@ -30,10 +30,106 @@
       select option {
         padding: 8px;
       }
-      /* Improve mobile experience */
-      @media (max-width: 640px) {
+      
+      /* Responsive grid - Desktop first */
+      .grid-row {
+        display: grid;
+        gap: 12px;
+      }
+      .cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .cols-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      /* Summary grid */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      
+      /* Computed grid */
+      .computed-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      
+      /* Button group */
+      .btn-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      
+      /* Header */
+      .header-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      
+      /* Card header */
+      .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      
+      /* Tablet: 768px and below */
+      @media (max-width: 768px) {
+        .cols-3 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .cols-4, .computed-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      
+      /* Mobile: 480px and below */
+      @media (max-width: 480px) {
         input, select, button {
-          font-size: 16px !important; /* Prevents zoom on iOS */
+          font-size: 16px !important;
+        }
+        
+        .cols-2, .cols-3, .cols-4 {
+          grid-template-columns: 1fr;
+        }
+        
+        .computed-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .header-inner {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .card-header-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .btn-group {
+          width: 100%;
+        }
+        
+        .btn-group > button {
+          flex: 1;
         }
       }
     </style>
