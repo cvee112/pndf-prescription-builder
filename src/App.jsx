@@ -287,7 +287,7 @@ export default function PrescriptionBuilder() {
     <div style={styles.container}>
       {/* Header */}
       <header style={styles.header}>
-        <div style={styles.headerInner}>
+        <div className="header-inner" style={styles.headerInner}>
           <div style={styles.logoArea}>
             <div style={styles.logoIcon}>℞</div>
             <div>
@@ -308,7 +308,7 @@ export default function PrescriptionBuilder() {
               <label style={styles.label}>Name / Initials</label>
               <input type="text" value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="e.g., J.D.C." style={styles.input} />
             </div>
-            <div style={styles.row3}>
+            <div className="grid-row cols-3">
               <div style={styles.field}>
                 <label style={styles.label}>Age</label>
                 <div style={styles.inputGroup}>
@@ -338,9 +338,9 @@ export default function PrescriptionBuilder() {
 
         {/* Medications */}
         <section style={styles.card}>
-          <div style={styles.cardHeaderRow}>
+          <div className="card-header-row" style={styles.cardHeaderRow}>
             <h2 style={styles.cardTitle}><span style={styles.icon}>💊</span> Medications</h2>
-            <div style={styles.btnGroup}>
+            <div className="btn-group">
               {prescriptionItems.length > 1 && (
                 <>
                   <button onClick={collapseAll} style={styles.btnSecondary}>Collapse All</button>
@@ -382,7 +382,7 @@ export default function PrescriptionBuilder() {
         {validItemsCount > 0 && (
           <section style={styles.card}>
             <h2 style={styles.cardTitle}><span style={styles.icon}>📋</span> Summary</h2>
-            <div style={styles.summaryRow}>
+            <div className="summary-grid" style={styles.summaryRowBase}>
               <div style={styles.summaryBox}>
                 <div style={styles.summaryLabel}>Medications</div>
                 <div style={styles.summaryValue}>{validItemsCount}</div>
@@ -484,7 +484,7 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
     <div style={styles.item}>
       <div style={styles.itemHeader}>
         <span style={styles.itemNum}>{index + 1}</span>
-        <div style={styles.btnGroup}>
+        <div className="btn-group">
           {drug && <button onClick={onToggleCollapse} style={styles.btnSecondary}>▲ Collapse</button>}
           <button onClick={onRemove} style={styles.btnRemove}>✕ Remove</button>
         </div>
@@ -569,7 +569,7 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
             )}
 
             {item.dosingMode === 'weight-day' && (
-              <div style={styles.row2}>
+              <div className="grid-row cols-2">
                 <div style={styles.field}>
                   <label style={styles.labelSm}>Total daily dose (mg/kg/day)</label>
                   <input type="number" value={item.mgPerKgDay} onChange={(e) => onUpdate({ mgPerKgDay: e.target.value })} placeholder="30" step="0.1" style={styles.input} />
@@ -654,7 +654,7 @@ function PrescriptionItem({ item, index, isPediatric, patientWeight, onUpdate, o
           {showAdvanced && <input type="text" value={item.customInstructions} onChange={(e) => onUpdate({ customInstructions: e.target.value })} placeholder="Type custom instructions to override auto-generated ones..." style={styles.input} />}
 
           <div style={styles.computedBox}>
-            <div style={styles.computedGrid}>
+            <div className="computed-grid">
               <div style={styles.computedItem}><span style={styles.computedLabel}>Dose</span><span style={styles.computedValue}>{details.doseDisplay || '—'}</span></div>
               <div style={styles.computedItem}><span style={styles.computedLabel}>Frequency</span><span style={styles.computedValue}>{details.frequencyDisplay || '—'}</span></div>
               <div style={styles.computedItem}><span style={styles.computedLabel}>Quantity</span><span style={styles.computedValue}>{details.quantity ? `${details.quantity} ${details.isLiquid ? 'bottle(s)' : 'pc(s)'}` : '—'}</span></div>
@@ -682,8 +682,6 @@ const styles = {
   cardHeaderRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 },
   icon: { fontSize: 18 },
   formGrid: { display: 'flex', flexDirection: 'column', gap: 16 },
-  row2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
-  row3: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 },
   field: { display: 'flex', flexDirection: 'column', gap: 6 },
   label: { fontSize: 13, fontWeight: 600, color: colors.gray700 },
   labelSm: { fontSize: 12, fontWeight: 500, color: colors.gray600 },
@@ -694,10 +692,9 @@ const styles = {
   select: { padding: '10px 12px', fontSize: 14, border: `1.5px solid ${colors.gray300}`, borderRadius: 6, background: colors.white, cursor: 'pointer', outline: 'none', width: '100%' },
   inputGroup: { display: 'flex' },
   infoBanner: { marginTop: 16, padding: '10px 14px', background: `linear-gradient(135deg, #fef9c3, ${colors.accent}40)`, border: `1px solid ${colors.accentDark}50`, borderRadius: 6, fontSize: 13, color: colors.gray800, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 },
-  btnGroup: { display: 'flex', gap: 8, flexWrap: 'wrap' },
-  btnPrimary: { padding: '8px 14px', fontSize: 13, fontWeight: 600, color: colors.white, background: colors.primary, border: 'none', borderRadius: 6, cursor: 'pointer', transition: 'background 0.15s' },
+  btnPrimary: { padding: '8px 14px', fontSize: 13, fontWeight: 600, color: colors.white, background: colors.primary, border: 'none', borderRadius: 6, cursor: 'pointer', transition: 'background 0.15s', whiteSpace: 'nowrap' },
   btnPrimaryLg: { width: '100%', padding: '14px 20px', fontSize: 14, fontWeight: 600, color: colors.white, background: colors.primary, border: 'none', borderRadius: 8, cursor: 'pointer' },
-  btnSecondary: { padding: '6px 10px', fontSize: 12, fontWeight: 500, color: colors.gray600, background: colors.gray100, border: `1px solid ${colors.gray300}`, borderRadius: 6, cursor: 'pointer' },
+  btnSecondary: { padding: '6px 10px', fontSize: 12, fontWeight: 500, color: colors.gray600, background: colors.gray100, border: `1px solid ${colors.gray300}`, borderRadius: 6, cursor: 'pointer', whiteSpace: 'nowrap' },
   btnRemove: { padding: '6px 10px', fontSize: 12, fontWeight: 600, color: colors.red, background: colors.redLight, border: 'none', borderRadius: 6, cursor: 'pointer' },
   btnIcon: { padding: '6px 10px', fontSize: 12, color: colors.gray600, background: colors.gray100, border: `1px solid ${colors.gray200}`, borderRadius: 4, cursor: 'pointer' },
   btnCopy: { padding: '8px 14px', fontSize: 13, fontWeight: 500, color: colors.primary, background: colors.white, border: `1.5px solid ${colors.primary}`, borderRadius: 6, cursor: 'pointer' },
@@ -739,13 +736,12 @@ const styles = {
   checkbox: { width: 18, height: 18, accentColor: colors.primary },
   advToggle: { background: 'none', border: 'none', color: colors.gray500, fontSize: 13, cursor: 'pointer', padding: '8px 0', marginBottom: 8, fontWeight: 500, textAlign: 'left' },
   computedBox: { marginTop: 16, padding: 16, background: colors.white, borderRadius: 8, border: `1px solid ${colors.gray200}` },
-  computedGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 },
   computedItem: { display: 'flex', flexDirection: 'column', gap: 4 },
-  computedItemHighlight: { display: 'flex', flexDirection: 'column', gap: 4, background: colors.primaryLight, padding: '8px 12px', borderRadius: 6, marginLeft: -4, marginRight: -4 },
+  computedItemHighlight: { display: 'flex', flexDirection: 'column', gap: 4, background: colors.primaryLight, padding: '8px 12px', borderRadius: 6 },
   computedLabel: { fontSize: 11, fontWeight: 600, color: colors.gray500, textTransform: 'uppercase' },
   computedValue: { fontSize: 14, fontWeight: 600, color: colors.gray800 },
   computedValueLg: { fontSize: 16, fontWeight: 700, color: colors.primary },
-  summaryRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 },
+  summaryRowBase: { marginBottom: 20 },
   summaryBox: { background: colors.gray50, borderRadius: 8, padding: 20, textAlign: 'center' },
   summaryBoxAccent: { background: colors.primaryLight, border: `1px solid ${colors.primary}30` },
   summaryLabel: { fontSize: 11, fontWeight: 600, color: colors.gray500, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8 },
