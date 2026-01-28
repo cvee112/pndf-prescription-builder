@@ -28,6 +28,92 @@ const isLiquid = (drugName) => {
 
 const isTabletOrCapsule = (drugName) => /tablet|capsule|chewable/i.test(drugName);
 
+const getMedicationForm = (drugName) => {
+  const name = drugName.toLowerCase();
+  
+  // Tablets (various types)
+  if (/tablet/i.test(name)) return { form: 'tablet', unit: 'tablet', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Capsules
+  if (/capsule/i.test(name)) return { form: 'capsule', unit: 'capsule', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Suppositories
+  if (/suppository/i.test(name)) return { form: 'suppository', unit: 'suppository', verb: 'Insert', pediatricVerb: 'Insert' };
+  
+  // Rectal solutions (enemas)
+  if (/rectal solution/i.test(name)) return { form: 'rectal', unit: 'dose', verb: 'Administer rectally', pediatricVerb: 'Administer rectally' };
+  
+  // Inhalers (MDI, DPI)
+  if (/inhaler/i.test(name)) return { form: 'inhaler', unit: 'puff', verb: 'Inhale', pediatricVerb: 'Give' };
+  
+  // Respiratory/Nebulizer solutions
+  if (/respiratory solution/i.test(name)) return { form: 'nebulizer', unit: 'nebule', verb: 'Nebulize', pediatricVerb: 'Nebulize' };
+  
+  // Nasal solutions
+  if (/nasal solution/i.test(name)) return { form: 'nasal', unit: 'spray', verb: 'Spray', pediatricVerb: 'Spray' };
+  
+  // Eye drops/ointment
+  if (/eye drops/i.test(name)) return { form: 'eye drops', unit: 'drop', verb: 'Instill', pediatricVerb: 'Instill' };
+  if (/eye ointment/i.test(name)) return { form: 'eye ointment', unit: 'application', verb: 'Apply', pediatricVerb: 'Apply' };
+  
+  // Ear drops
+  if (/ear drops/i.test(name)) return { form: 'ear drops', unit: 'drop', verb: 'Instill', pediatricVerb: 'Instill' };
+  
+  // Oral drops
+  if (/oral drops/i.test(name)) return { form: 'oral drops', unit: 'mL', verb: 'Give', pediatricVerb: 'Give' };
+  
+  // Syrups
+  if (/syrup/i.test(name)) return { form: 'syrup', unit: 'mL', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Oral suspensions (including edge cases like "suspension, 60 mL")
+  if (/oral suspension|suspension.*bottle|suspension,?\s*\d+\s*ml/i.test(name)) return { form: 'suspension', unit: 'mL', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Oral solutions/elixirs
+  if (/oral solution|oral elixir|elixir bottle/i.test(name)) return { form: 'solution', unit: 'mL', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Oral powder/granules sachets
+  if (/oral powder sachet|granules sachet|oral granules/i.test(name)) return { form: 'sachet', unit: 'sachet', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // Creams
+  if (/cream/i.test(name)) return { form: 'cream', unit: 'application', verb: 'Apply', pediatricVerb: 'Apply' };
+  
+  // Ointments (non-eye)
+  if (/ointment/i.test(name) && !/eye/i.test(name)) return { form: 'ointment', unit: 'application', verb: 'Apply', pediatricVerb: 'Apply' };
+  
+  // Lotions
+  if (/lotion/i.test(name)) return { form: 'lotion', unit: 'application', verb: 'Apply', pediatricVerb: 'Apply' };
+  
+  // Shampoo
+  if (/shampoo/i.test(name)) return { form: 'shampoo', unit: 'application', verb: 'Apply', pediatricVerb: 'Apply' };
+  
+  // Sprays (e.g., Lidocaine spray)
+  if (/spray bottle/i.test(name)) return { form: 'spray', unit: 'spray', verb: 'Spray', pediatricVerb: 'Spray' };
+  
+  // Injections - expanded patterns
+  if (/for injection|for infusion|iv infusion/i.test(name)) return { form: 'injection', unit: 'dose', verb: 'Inject', pediatricVerb: 'Give' };
+  if (/\bvial\b|\bampule?\b|\bampul\b/i.test(name)) return { form: 'injection', unit: 'dose', verb: 'Inject', pediatricVerb: 'Give' };
+  if (/pre-?filled (syringe|pen)/i.test(name)) return { form: 'injection', unit: 'dose', verb: 'Inject', pediatricVerb: 'Give' };
+  
+  // Vaccines
+  if (/vaccine/i.test(name)) return { form: 'vaccine', unit: 'dose', verb: 'Administer', pediatricVerb: 'Administer' };
+  
+  // Oral liquids in bottles (catch-all for things like "250 mg/5 mL, 120 mL Bottle")
+  if (/mg\/.*ml.*bottle/i.test(name)) return { form: 'solution', unit: 'mL', verb: 'Take', pediatricVerb: 'Give' };
+  
+  // IV/Irrigation solutions
+  if (/solution bottle.*irrigation|irrigating solution/i.test(name)) return { form: 'irrigation', unit: 'bottle', verb: 'Use', pediatricVerb: 'Use' };
+  if (/sterile water|sodium chloride.*solution bottle/i.test(name)) return { form: 'solution', unit: 'bottle', verb: 'Use', pediatricVerb: 'Use' };
+  
+  // Peritoneal dialysis
+  if (/peritoneal dialysis/i.test(name)) return { form: 'dialysis', unit: 'bottle', verb: 'Use', pediatricVerb: 'Use' };
+  
+  // TPN/Admixtures
+  if (/admixture/i.test(name)) return { form: 'TPN', unit: 'bag', verb: 'Administer', pediatricVerb: 'Administer' };
+  
+  // Default
+  return { form: 'other', unit: 'dose', verb: 'Take', pediatricVerb: 'Give' };
+};
+
 const formatNumber = (num, decimals = 2) => {
   if (num === null || num === undefined || isNaN(num)) return '—';
   return num.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
@@ -130,24 +216,31 @@ export default function PrescriptionBuilder() {
     const bottleVolume = parseVolume(item.drug.raw_name);
     const liquid = isLiquid(item.drug.raw_name);
     const tablet = isTabletOrCapsule(item.drug.raw_name);
+    const medForm = getMedicationForm(item.drug.raw_name);
     
     let doseInMg = 0, doseDisplay = '', frequencyDisplay = '', dosesPerDay = 1, quantity = null, totalCost = null;
+    let unitCount = null;
     
     if (item.dosingMode === 'fixed') {
       doseInMg = parseFloat(item.fixedDose) || 0;
       if (item.fixedDoseUnit === 'mL' && liquid) {
         const mlDose = doseInMg;
+        unitCount = mlDose;
         doseDisplay = `${formatNumber(mlDose, 1)} mL`;
         if (conc) doseInMg = (mlDose * conc.amount) / conc.per;
       } else if (liquid && conc && doseInMg > 0) {
         const mlDose = (doseInMg * conc.per) / conc.amount;
-        doseDisplay = `${formatNumber(mlDose, 1)} mL (${doseInMg} ${item.fixedDoseUnit})`;
-      } else if (tablet && conc && doseInMg > 0) {
+        unitCount = mlDose;
+        doseDisplay = `${formatNumber(mlDose, 1)} mL`;
+      } else if ((tablet || medForm.form === 'capsule') && conc && doseInMg > 0) {
         const count = doseInMg / conc.amount;
-        const type = item.drug.raw_name.toLowerCase().includes('capsule') ? 'capsule' : 'tablet';
-        const countStr = formatNumber(count, 1); 
-        const isPlural = countStr !== '1';
-        doseDisplay = `${countStr} ${type}${isPlural ? 's' : ''}`;
+        unitCount = count;
+        doseDisplay = `${formatNumber(count, count % 1 === 0 ? 0 : 1)} ${medForm.unit}${count !== 1 ? 's' : ''}`;
+      } else if (medForm.form === 'suppository' && conc && doseInMg > 0) {
+        const count = doseInMg / conc.amount;
+        unitCount = count;
+        const plural = count !== 1 ? (medForm.unit === 'suppository' ? 'ies' : 's') : (medForm.unit === 'suppository' ? 'y' : '');
+        doseDisplay = `${formatNumber(count, count % 1 === 0 ? 0 : 1)} suppositor${count !== 1 ? 'ies' : 'y'}`;
       } else {
         doseDisplay = doseInMg > 0 ? `${doseInMg} ${item.fixedDoseUnit}` : '';
       }
@@ -156,10 +249,12 @@ export default function PrescriptionBuilder() {
       doseInMg = mgPerKg * weight;
       if (liquid && conc) {
         const mlDose = (doseInMg * conc.per) / conc.amount;
-        doseDisplay = `${formatNumber(mlDose, 1)} mL (${formatNumber(doseInMg)} mg)`;
-      } else if (tablet && conc) {
-        const tablets = doseInMg / conc.amount;
-        doseDisplay = `${formatNumber(tablets, 1)} tablet${tablets !== 1 ? 's' : ''} (${formatNumber(doseInMg)} mg)`;
+        unitCount = mlDose;
+        doseDisplay = `${formatNumber(mlDose, 1)} mL`;
+      } else if ((tablet || medForm.form === 'capsule') && conc) {
+        const count = doseInMg / conc.amount;
+        unitCount = count;
+        doseDisplay = `${formatNumber(count, count % 1 === 0 ? 0 : 1)} ${medForm.unit}${count !== 1 ? 's' : ''}`;
       } else {
         doseDisplay = `${formatNumber(doseInMg)} mg`;
       }
@@ -172,10 +267,12 @@ export default function PrescriptionBuilder() {
       
       if (liquid && conc) {
         const mlDose = (doseInMg * conc.per) / conc.amount;
-        doseDisplay = `${formatNumber(mlDose, 1)} mL (${formatNumber(doseInMg)} mg)`;
-      } else if (tablet && conc) {
-        const tablets = doseInMg / conc.amount;
-        doseDisplay = `${formatNumber(tablets, 1)} tablet${tablets !== 1 ? 's' : ''} (${formatNumber(doseInMg)} mg)`;
+        unitCount = mlDose;
+        doseDisplay = `${formatNumber(mlDose, 1)} mL`;
+      } else if ((tablet || medForm.form === 'capsule') && conc) {
+        const count = doseInMg / conc.amount;
+        unitCount = count;
+        doseDisplay = `${formatNumber(count, count % 1 === 0 ? 0 : 1)} ${medForm.unit}${count !== 1 ? 's' : ''}`;
       } else {
         doseDisplay = `${formatNumber(doseInMg)} mg`;
       }
@@ -206,7 +303,7 @@ export default function PrescriptionBuilder() {
         const mlPerDose = item.fixedDoseUnit === 'mL' ? parseFloat(item.fixedDose) || 0 : (doseInMg * conc.per) / conc.amount;
         const totalMl = mlPerDose * totalDoses;
         quantity = Math.ceil(totalMl / bottleVolume);
-      } else if (tablet) {
+      } else if (tablet || medForm.form === 'capsule' || medForm.form === 'suppository') {
         quantity = conc ? Math.ceil((doseInMg / conc.amount) * totalDoses) : totalDoses;
       } else {
         quantity = totalDoses;
@@ -215,12 +312,22 @@ export default function PrescriptionBuilder() {
     
     if (quantity && item.drug.highest_price) totalCost = quantity * item.drug.highest_price;
     
-    return { doseInMg, doseDisplay, frequencyDisplay, dosesPerDay, quantity, totalCost, bottleVolume, isLiquid: liquid, isTablet: tablet, concentration: conc };
+    return { doseInMg, doseDisplay, frequencyDisplay, dosesPerDay, quantity, totalCost, bottleVolume, isLiquid: liquid, isTablet: tablet, concentration: conc, medForm, unitCount };
   }, [patientWeight]);
 
   const generatePrescription = useCallback(() => {
     const lines = [];
-    const ageDisplay = `${patientAge || '__'}${ageUnit === 'months' ? 'mo' : ''}`;
+    // Age format: "25/M" for years, "6mo/M" for months
+    let ageDisplay = '';
+    if (patientAge) {
+      if (ageUnit === 'months') {
+        ageDisplay = `${patientAge}mo`;
+      } else {
+        ageDisplay = patientAge; // Just the number for years
+      }
+    } else {
+      ageDisplay = '__';
+    }
     lines.push(`${patientName || '[Patient Name]'}, ${ageDisplay}/${patientSex || '[M/F]'}`);
     lines.push(today);
     lines.push('');
@@ -230,7 +337,10 @@ export default function PrescriptionBuilder() {
       if (!item.drug) return;
       const computed = computeItemDetails(item);
       const drugName = item.drug.raw_name;
-      const verb = isPediatric ? 'Give' : 'Take';
+      const medForm = computed.medForm || getMedicationForm(drugName);
+      
+      // Choose verb based on medication form and patient type
+      let verb = isPediatric ? medForm.pediatricVerb : medForm.verb;
       
       let instruction = '';
       if (item.customInstructions) {
