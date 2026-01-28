@@ -14335,6 +14335,66 @@ const DRUG_DATABASE = [
 ];
 
 // Utility functions
+// Use pre-parsed database fields when available, fallback to runtime parsing
+const getConcentration = (drug) => {
+  // First try pre-parsed database fields
+  if (drug.concentration != null && drug.concentration_unit) {
+    return {
+      amount: drug.concentration,
+      unit: drug.concentration_unit,
+      per: drug.concentration_per || 1,
+      perUnit: drug.concentration_per_unit || "unit",
+    };
+  }
+  // Fallback to runtime parsing for edge cases
+  const match = drug.raw_name.match(
+    /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s*\/\s*(\d+(?:\.\d+)?)\s*(mL|L)/i,
+  );
+  if (match) {
+    return {
+      amount: parseFloat(match[1]),
+      unit: match[2].toLowerCase(),
+      per: parseFloat(match[3]),
+      perUnit: match[4].toLowerCase(),
+    };
+  }
+  const simple = drug.raw_name.match(
+    /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s+(?:Tablet|Capsule|Chewable|Film|Suppository)/i,
+  );
+  if (simple) {
+    return {
+      amount: parseFloat(simple[1]),
+      unit: simple[2].toLowerCase(),
+      per: 1,
+      perUnit: "unit",
+    };
+  }
+  return null;
+};
+
+const getVolume = (drug) => {
+  // First try pre-parsed database field
+  if (drug.volume_ml != null) {
+    return drug.volume_ml;
+  }
+  // Fallback to runtime parsing
+  const match = drug.raw_name.match(
+    /(\d+(?:\.\d+)?)\s*mL\s+(?:Syrup|Suspension|Oral|Solution|Drops|Bottle|Elixir|Respiratory|Eye|Ear)/i,
+  );
+  return match ? parseFloat(match[1]) : null;
+};
+
+const getDoseCount = (drug) => {
+  // First try pre-parsed database field
+  if (drug.doses_per_container != null) {
+    return drug.doses_per_container;
+  }
+  // Fallback to runtime parsing for "200 doses", "120 actuations"
+  const match = drug.raw_name.match(/(\d+)\s*(?:doses?|actuations?)/i);
+  return match ? parseInt(match[1]) : null;
+};
+
+// Legacy compatibility functions (for older code paths)
 const parseConcentration = (drugName) => {
   const match = drugName.match(
     /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s*\/\s*(\d+(?:\.\d+)?)\s*(mL|L)/i,
@@ -14348,7 +14408,7 @@ const parseConcentration = (drugName) => {
     };
   }
   const simple = drugName.match(
-    /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s+(?:Tablet|Capsule|Chewable|Film)/i,
+    /(\d+(?:\.\d+)?)\s*(mg|mcg|g|IU)\s+(?:Tablet|Capsule|Chewable|Film|Suppository)/i,
   );
   if (simple) {
     return {
@@ -14363,13 +14423,12 @@ const parseConcentration = (drugName) => {
 
 const parseVolume = (drugName) => {
   const match = drugName.match(
-    /(\d+(?:\.\d+)?)\s*mL\s+(?:Syrup|Suspension|Oral|Solution|Drops|Bottle|Elixir)/i,
+    /(\d+(?:\.\d+)?)\s*mL\s+(?:Syrup|Suspension|Oral|Solution|Drops|Bottle|Elixir|Respiratory|Eye|Ear)/i,
   );
   return match ? parseFloat(match[1]) : null;
 };
 
 const parseDoseCount = (drugName) => {
-  // Match patterns like "200 doses", "120 actuations"
   const match = drugName.match(/(\d+)\s*(?:doses?|actuations?)/i);
   return match ? parseInt(match[1]) : null;
 };
@@ -14771,8 +14830,9 @@ export default function PrescriptionBuilder() {
       if (!item.drug) return {};
 
       const weight = parseFloat(patientWeight) || 0;
-      const conc = parseConcentration(item.drug.raw_name);
-      const bottleVolume = parseVolume(item.drug.raw_name);
+      // Use new getter functions that leverage pre-parsed database fields
+      const conc = getConcentration(item.drug);
+      const bottleVolume = getVolume(item.drug);
       const liquid = isLiquid(item.drug.raw_name);
       const tablet = isTabletOrCapsule(item.drug.raw_name);
       const medForm = getMedicationForm(item.drug.raw_name);
@@ -14895,7 +14955,7 @@ export default function PrescriptionBuilder() {
         const totalDoses = days * dosesPerDay;
 
         // Check if drug has dose count (inhalers, nasal sprays)
-        const dosesPerContainer = parseDoseCount(item.drug.raw_name);
+        const dosesPerContainer = getDoseCount(item.drug);
 
         if (dosesPerContainer) {
           // For inhalers/nasal sprays: calculate based on puffs/actuations per container
@@ -14925,8 +14985,8 @@ export default function PrescriptionBuilder() {
       if (quantity && item.drug.highest_price)
         totalCost = quantity * item.drug.highest_price;
 
-      // Get doses per container for display (inhalers)
-      const dosesPerContainer = parseDoseCount(item.drug.raw_name);
+      // Get doses per container for display (inhalers) - use pre-parsed database field
+      const dosesPerContainerDisplay = getDoseCount(item.drug);
 
       return {
         doseInMg,
@@ -14941,7 +15001,7 @@ export default function PrescriptionBuilder() {
         concentration: conc,
         medForm,
         unitCount,
-        dosesPerContainer,
+        dosesPerContainer: dosesPerContainerDisplay,
       };
     },
     [patientWeight],
