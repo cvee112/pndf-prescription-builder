@@ -409,7 +409,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Aluminum Hydroxide + Magnesium Hydroxide 200 mg + 100 mg Tablet",
-    concentration: 100,
+    concentration: 200,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -429,7 +429,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Aluminum Hydroxide + Magnesium Hydroxide 225 mg + 200 mg/5 mL, 120 mL Oral Suspension Bottle",
-    concentration: 200,
+    concentration: 225,
     concentration_unit: "mg",
     concentration_per: 5,
     volume_ml: 120,
@@ -449,7 +449,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Aluminum Hydroxide + Magnesium Hydroxide 225 mg + 200 mg/5 mL, 60 mL Oral Suspension Bottle",
-    concentration: 200,
+    concentration: 225,
     concentration_unit: "mg",
     concentration_per: 5,
     volume_ml: 60,
@@ -894,7 +894,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Ampicillin + Sulbactam 1000 mg + 500 mg Powder for Injection Vial",
-    concentration: 500,
+    concentration: 1000,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -914,7 +914,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Ampicillin + Sulbactam 500 mg + 250 mg Powder for Injection Vial",
-    concentration: 250,
+    concentration: 500,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -3859,7 +3859,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Co-Amoxiclav (Amoxicillin + Clavulanic Acid) 200 mg + 28.5 mg/5 mL, 70 mL Oral Suspension Bottle",
-    concentration: 28.5,
+    concentration: 200,
     concentration_unit: "mg",
     concentration_per: 5,
     volume_ml: 70,
@@ -3879,7 +3879,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Co-Amoxiclav (Amoxicillin + Clavulanic Acid) 400 mg + 57 mg/5 mL, 70 mL Oral Suspension Bottle",
-    concentration: 57,
+    concentration: 400,
     concentration_unit: "mg",
     concentration_per: 5,
     volume_ml: 70,
@@ -3899,7 +3899,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Co-Amoxiclav (Amoxicillin + Clavulanic Acid) 500 mg + 125 mg Tablet",
-    concentration: 125,
+    concentration: 500,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -3919,7 +3919,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Co-Amoxiclav (Amoxicillin + Clavulanic Acid) 875 mg + 125 mg Tablet",
-    concentration: 125,
+    concentration: 875,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -3977,7 +3977,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Cotrimoxazole (Sulfamethoxazole + Trimethoprim) 400 mg + 80 mg Tablet",
-    concentration: 80,
+    concentration: 400,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -4037,7 +4037,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Cotrimoxazole (Sulfamethoxazole + Trimethoprim) 800 mg + 160 mg Tablet",
-    concentration: 160,
+    concentration: 800,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -7675,7 +7675,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Irbesartan + Hydrochlorothiazide 150 mg + 12.5 mg Tablet",
-    concentration: 12.5,
+    concentration: 150,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -7809,7 +7809,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Isoniazid + Rifampicin + Pyrazinamide + Ethambutol 75 mg + 150 mg + 400 mg + 275 mg Tablet",
-    concentration: 275,
+    concentration: 75,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -7828,7 +7828,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Isoniazid + Rifampicin 75 mg + 150 mg Tablet",
-    concentration: 150,
+    concentration: 75,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -8477,7 +8477,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Levodopa + Carbidopa 100 mg + 25 mg Tablet",
-    concentration: 25,
+    concentration: 100,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -8496,7 +8496,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Levodopa + Carbidopa 250 mg + 25 mg Tablet",
-    concentration: 25,
+    concentration: 250,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -8914,7 +8914,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Losartan + Hydrochlorothiazide 50 mg + 12.5 mg Tablet",
-    concentration: 12.5,
+    concentration: 50,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -12433,7 +12433,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Sacubitril + Valsartan 100 mg (48.6 mg + 51.4 mg) Tablet",
-    concentration: 48.6,
+    concentration: 100,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -12452,7 +12452,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Sacubitril + Valsartan 200 mg (97.2 mg + 102.8 mg) Tablet",
-    concentration: 97.2,
+    concentration: 200,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -12471,7 +12471,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Sacubitril + Valsartan 50 mg (24.3 mg + 25.7 mg) Tablet",
-    concentration: 24.3,
+    concentration: 50,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -13012,7 +13012,7 @@ const DRUG_DATABASE = [
   {
     raw_name:
       "Sodium Valproate + Valproic Acid 500 mg (333 mg + 145 mg) controlled release tablet",
-    concentration: 333,
+    concentration: 500,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
@@ -13355,7 +13355,7 @@ const DRUG_DATABASE = [
   },
   {
     raw_name: "Telmisartan + Hydrochlorothiazide 40 mg + 12.5 mg tablet",
-    concentration: 12.5,
+    concentration: 40,
     concentration_unit: "mg",
     concentration_per: 1,
     volume_ml: null,
